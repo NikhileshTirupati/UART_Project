@@ -155,7 +155,6 @@ Mid-bit sampling is used to improve noise immunity — the receiver waits for ~h
 | `rec_readyH`      | Output    | 1       | High when received data is valid   |
 | `rec_busy`        | Output    | 1       | High while receiver is active      |
 | `xmit_active`     | Output    | 1       | High while transmitter is sending  |
-| `uart_clk_1`      | Output    | 1       | Exposed internal baud clock        |
 
 ---
 
