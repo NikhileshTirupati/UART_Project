@@ -14,7 +14,7 @@ module u_xmit #(parameter WIDTH=8)(
     reg [$clog2(WIDTH+2)-1:0] bit_cnt;
     reg [4:0] counter;
 
-    reg dataH, done;
+    reg done;
 
     always @(posedge clk or negedge rst) begin
         if (!rst) begin
@@ -23,7 +23,7 @@ module u_xmit #(parameter WIDTH=8)(
         end
         else begin
             cs <= ns;
-            uart_XMIT_dataH <= dataH;
+            uart_XMIT_dataH <= data[0];
             if (cs == TXMIT || cs == DONE) counter <= counter + 1;
         end 
     end
@@ -34,11 +34,9 @@ module u_xmit #(parameter WIDTH=8)(
                 bit_cnt = 0;
                 xmit_active = 0;
                 xmit_doneH = 1'b1;
-                dataH = 1'b1;
+                data = {(WIDTH+2){1'b1}}; // Idle state is high
                 if (xmitH) begin
                     data = {1'b1, xmitDataH, 1'b0}; // Stop bit + Data + Start bit
-                    dataH = data[0];
-                    data = data >> 1;
                     counter = 0;     
                     bit_cnt = 1; 
                     ns = TXMIT;
@@ -51,7 +49,6 @@ module u_xmit #(parameter WIDTH=8)(
                 if(counter == 16) begin
                     counter = 0;
                     if (bit_cnt < WIDTH + 2) begin
-                        dataH = data[0];
                         data = data >> 1;
                         bit_cnt = bit_cnt + 1;
                     end
@@ -67,8 +64,6 @@ module u_xmit #(parameter WIDTH=8)(
                     if (xmitH) begin
                         ns = TXMIT;
                         data = {1'b1, xmitDataH, 1'b0}; // Stop bit + Data + Start bit
-                        dataH = data[0];
-                        data = data >> 1;
                         counter = 0;     
                         bit_cnt = 1;              
                     end
