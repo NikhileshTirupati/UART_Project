@@ -54,12 +54,6 @@ module u_xmit #(parameter WIDTH=8)(
                         dataH = data[0];
                         data = data >> 1;
                         bit_cnt = bit_cnt + 1;
-                        if (bit_cnt < WIDTH + 3) ns = TXMIT;
-                        else begin
-                            ns = DONE;
-                            xmit_doneH = 1'b1;
-                            xmit_active = 0;
-                        end
                     end
                     else begin
                             ns = DONE;
